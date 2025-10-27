@@ -287,75 +287,54 @@
   }
 
   function today(){
-    var dt = new Date();
-    var dd = String(dt.getDate()).padStart(2,'0');
-    var mm = String(dt.getMonth()+1).padStart(2,'0');
-    var yyyy = dt.getFullYear();
-    $('#dob').value = dd+'.'+mm+'.'+yyyy;
-    calc();
-  }
-// === v1.7: Маска дати з делегуванням та кількома подіями ===
-(function(){
-  function formatDob(raw){
-    var v = String(raw || '').replace(/[^\d]/g,''); // тільки цифри
-    if(v.length >= 2 && v.length <= 4){
-      v = v.slice(0,2)+'.'+v.slice(2);
-    } else if(v.length > 4){
-      v = v.slice(0,2)+'.'+v.slice(2,4)+'.'+v.slice(4,8);
-    }
-    return v;
-  }
-  function handle(e){
-    var el = e && e.target;
-    if(!el) return;
-    // Працюємо лише з нашим полем
-    if(!(el.id==='dob' || el.name==='dob' || el.getAttribute('data-mx')==='dob')) return;
-    var v = formatDob(el.value);
-    if(el.value !== v) el.value = v;
-  }
-  // Спроба знайти поле напряму і одразу застосувати маску
-  var el = document.getElementById('dob') ||
-           document.querySelector('input[name="dob"], input[data-mx="dob"]');
-  if(el){
-    el.setAttribute('inputmode','numeric');
-    el.setAttribute('maxlength','10');
-    el.value = formatDob(el.value);
-    ['input','keyup','change','paste'].forEach(function(ev){
-      el.addEventListener(ev, handle, true);
-    });
-  }
-  // Плюс делегування на документ (на випадок, якщо поле зʼявиться пізніше)
-  ['input','keyup','change'].forEach(function(ev){
-    document.addEventListener(ev, handle, true);
-  });
-
-  // Маркер версії у консолі
-  try{ console.log('RYVOK Matrix mask v1.7 active'); }catch(_){}
-})();
-
-  function init(){
-    injectCSS();
-    html();
-    buildGrid();
-    buildSide();
-    // підписка маски САМЕ на елемент поля (надійніше за документ)
-var dobEl = document.getElementById('dob');
-if(dobEl){
-  dobEl.addEventListener('input', maskDob);
+  var dt = new Date();
+  var dd = String(dt.getDate()).padStart(2,'0');
+  var mm = String(dt.getMonth()+1).padStart(2,'0');
+  var yyyy = dt.getFullYear();
+  $('#dob').value = dd+'.'+mm+'.'+yyyy;
+  calc();
 }
 
-    // Bind
-    $('#mxCalcBtn').addEventListener('click', calc);
-    $('#mxTodayBtn').addEventListener('click', today);
-    $('#mxCopyBtn').addEventListener('click', copyLink);
-    // URL ?dob=
-    try{
-      var u = new URL(location.href);
-      var dob = u.searchParams.get('dob');
-      if(dob){ $('#dob').value = dob; calc(); }
-    }catch(e){}
+// Маска дати: робить 13101978 → 13.10.1978, чистить пробіли/коми/слеші
+function maskDob(e){
+  var el = e && e.target ? e.target : document.getElementById('dob');
+  if(!el) return;
+  var v = (el.value || '').replace(/[^\d]/g,''); // лише цифри
+  if(v.length >= 2 && v.length <= 4){
+    v = v.slice(0,2)+'.'+v.slice(2);
+  } else if(v.length > 4){
+    v = v.slice(0,2)+'.'+v.slice(2,4)+'.'+v.slice(4,8);
+  }
+  el.value = v;
+}
+
+function init(){
+  injectCSS();
+  html();
+  buildGrid();
+  buildSide();
+
+  // Підписка маски саме на елемент поля (надійніше)
+  var dobEl = document.getElementById('dob');
+  if(dobEl){
+    dobEl.addEventListener('input', maskDob);
   }
 
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', init); }
-  else { init(); }
+  // Bind
+  $('#mxCalcBtn').addEventListener('click', calc);
+  $('#mxTodayBtn').addEventListener('click', today);
+  $('#mxCopyBtn').addEventListener('click', copyLink);
+
+  // URL ?dob=
+  try{
+    var u = new URL(location.href);
+    var dob = u.searchParams.get('dob');
+    if(dob){ $('#dob').value = dob; calc(); }
+  }catch(e){}
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else { init(); }
+
 })();

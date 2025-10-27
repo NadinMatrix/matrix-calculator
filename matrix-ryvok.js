@@ -314,4 +314,15 @@
 
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', init); }
   else { init(); }
+// === Автоматичні крапки у полі дати народження ===
+document.addEventListener('input', function (e) {
+  if (e.target && e.target.id === 'dob') {
+    let v = e.target.value.replace(/\D/g, ''); // залишаємо лише цифри
+    if (v.length > 2 && v.length <= 4)
+      v = v.slice(0, 2) + '.' + v.slice(2);
+    else if (v.length > 4)
+      v = v.slice(0, 2) + '.' + v.slice(2, 4) + '.' + v.slice(4, 8);
+    e.target.value = v;
+  }
+});
 })();

@@ -165,17 +165,20 @@
   }
 
   function sanitizeDob(str){
-    if(!str) return null;
-    var s = str.trim().replace(/[\/\-]/g,'.');
-    var m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/);
-    if(!m) return null;
-    var dd=m[1], mm=m[2], yyyy=m[3];
-    if(yyyy.length===2){ yyyy = (parseInt(yyyy,10) >= 30 ? '19':'20') + yyyy; }
-    dd = dd.padStart(2,'0'); mm = mm.padStart(2,'0');
-    var dt = new Date(yyyy+'-'+mm+'-'+dd+'T00:00:00');
-    if(isNaN(+dt)) return null;
-    if(dt.getUTCFullYear()!=+yyyy || (dt.getUTCMonth()+1)!=+mm || dt.getUTCDate()!=+dd) return null;
-    return dd+'.'+mm+'.'+yyyy;
+  if(!str) return null;
+  var s = str.trim().replace(/[\/\-]/g,'.');
+  var m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/);
+  if(!m) return null;
+  var dd = m[1].padStart(2,'0'),
+      mm = m[2].padStart(2,'0'),
+      yyyy = m[3];
+  if(yyyy.length===2){ yyyy = (parseInt(yyyy,10) >= 30 ? '19':'20') + yyyy; }
+  // Перевірка локально (без UTC-зсувів Safari)
+  var dt = new Date(+yyyy, +mm-1, +dd);
+  if(dt.getFullYear()!=+yyyy || (dt.getMonth()+1)!=+mm || dt.getDate()!=+dd) return null;
+  return dd+'.'+mm+'.'+yyyy;
+}
+
   }
 
   function countsFromDob(dob){

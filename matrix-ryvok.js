@@ -314,11 +314,12 @@ function init(){
   buildGrid();
   buildSide();
 
-  // Підписка маски саме на елемент поля (надійніше)
+  // Підписка маски саме на елемент поля
   var dobEl = document.getElementById('dob');
   if(dobEl){
     dobEl.addEventListener('input', maskDob);
   }
+}
 
   // Bind
   $('#mxCalcBtn').addEventListener('click', calc);

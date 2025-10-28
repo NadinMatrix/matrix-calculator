@@ -295,48 +295,28 @@
   calc();
 }
 
-// Маска дати: робить 13101978 → 13.10.1978, чистить пробіли/коми/слеші
-function maskDob(e){
-  var el = e && e.target ? e.target : document.getElementById('dob');
-  if(!el) return;
-  var v = (el.value || '').replace(/[^\d]/g,''); // лише цифри
-  if(v.length >= 2 && v.length <= 4){
-    v = v.slice(0,2)+'.'+v.slice(2);
-  } else if(v.length > 4){
-    v = v.slice(0,2)+'.'+v.slice(2,4)+'.'+v.slice(4,8);
-  }
-  el.value = v;
-}
-
 function init(){
   injectCSS();
   html();
   buildGrid();
   buildSide();
 
-  // Підписка маски саме на елемент поля
-  var dobEl = document.getElementById('dob');
-  if(dobEl){
-    dobEl.addEventListener('input', maskDob);
-  }
-}
-
-  // Bind
   $('#mxCalcBtn').addEventListener('click', calc);
   $('#mxTodayBtn').addEventListener('click', today);
   $('#mxCopyBtn').addEventListener('click', copyLink);
 
-  // URL ?dob=
-  try{
+  try {
     var u = new URL(location.href);
     var dob = u.searchParams.get('dob');
-    if(dob){ $('#dob').value = dob; calc(); }
-  }catch(e){}
+    if (dob) { $('#dob').value = dob; calc(); }
+  } catch(e) {}
+
+  // ⛔ без автокрапок поки що!
 }
 
-if(document.readyState==='loading'){
+if (document.readyState === 'loading')
   document.addEventListener('DOMContentLoaded', init);
-} else { 
+else
   init();
 }
 })();

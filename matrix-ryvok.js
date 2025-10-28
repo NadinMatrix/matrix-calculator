@@ -71,7 +71,12 @@
       '  <form class="mx-form" onsubmit="return false;">',
       '    <label class="mx-label" for="dob">Дата народження</label>',
       '    <div class="mx-inputrow">',
-      '      <input id="dob" class="mx-input" type="text" inputmode="numeric" placeholder="13.10.1987" autocomplete="bday">',
+      '      <<input id="dob"
+       type="text"
+       placeholder="ДД.ММ.РРРР"
+       inputmode="numeric"
+       autocomplete="bday"
+       maxlength="10">',
       '      <button class="mx-btn" type="button" id="mxCalcBtn">Розрахувати</button>',
       '    </div>',
       '    <div class="mx-helpers">',
@@ -314,9 +319,10 @@ function init(){
   // ⛔ без автокрапок поки що!
 }
 
-if (document.readyState === 'loading')
+if (document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', init);
-else
+} else {
   init();
 }
 })();
+
